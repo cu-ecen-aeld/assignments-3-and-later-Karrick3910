@@ -34,10 +34,10 @@ set -u
 # WRITEDIR: Base directory for test files (default: /tmp/aeld-data)
 # username: Read from config file, used in test filenames
 #------------------------------------------------------------------------------
-NUMFILES=10                          # Default number of files to create
-WRITESTR=AELD_IS_FUN                 # Default string content  
-WRITEDIR=/tmp/aeld-data              # Default test directory
-username=$(cat conf/username.txt)    # Read username from configuration
+NUMFILES=10                                     # Default number of files to create
+WRITESTR=AELD_IS_FUN                            # Default string content  
+WRITEDIR=/tmp/aeld-data                         # Default test directory
+username=$(cat /etc/finder-app/conf/username.txt)    # Read username from configuration
 
 #------------------------------------------------------------------------------
 # 🔧 COMMAND LINE ARGUMENT PROCESSING
@@ -98,7 +98,7 @@ rm -rf "${WRITEDIR}"
 #
 # Read assignment type from configuration file
 #------------------------------------------------------------------------------
-assignment=`cat conf/assignment.txt`
+assignment=`cat /etc/finder-app/conf/assignment.txt`
 
 if [ $assignment != 'assignment1' ]
 then
@@ -148,9 +148,9 @@ fi
 for i in $( seq 1 $NUMFILES)  # Loop from 1 to NUMFILES
 do
 	# Call writer application to create test file
-	# Format: ./writer <filepath> <content>
-	# Example: ./writer /tmp/aeld-data/Karrick39101.txt AELD_IS_FUN
-	./writer "$WRITEDIR/${username}$i.txt" "$WRITESTR"
+	# Format: writer <filepath> <content>
+	# Example: writer /tmp/aeld-data/Karrick39101.txt AELD_IS_FUN
+	writer "$WRITEDIR/${username}$i.txt" "$WRITESTR"
 done
 
 #------------------------------------------------------------------------------
@@ -159,8 +159,10 @@ done
 # Run finder.sh with test directory and search string
 # Capture the entire output for verification
 # Expected output format: "The number of files are X and the number of matching lines are Y"
+# Write output to /tmp/assignment4-result.txt as required for assignment 4
 #------------------------------------------------------------------------------
-OUTPUTSTRING=$(./finder.sh "$WRITEDIR" "$WRITESTR")
+OUTPUTSTRING=$(finder.sh "$WRITEDIR" "$WRITESTR")
+echo "${OUTPUTSTRING}" > /tmp/assignment4-result.txt
 
 #------------------------------------------------------------------------------
 # 🧹 CLEANUP - Remove temporary test directories  
